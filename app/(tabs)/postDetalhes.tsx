@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet,
+} from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
+import { RouteProp } from "@react-navigation/native";
+import { AlunosStackParamList } from "../App";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types";
 import api from "../api";
 
-type NavigationProps = NativeStackNavigationProp<RootStackParamList, "postDetalhes">;
+type PostDetailsRouteProp = RouteProp<AlunosStackParamList, "postDetalhes">;
+
+type NavigationProps = NativeStackNavigationProp<
+  AlunosStackParamList,
+  "postDetalhes"
+>;
 
 const PostDetails: React.FC = () => {
   const route = useRoute();
@@ -48,11 +60,16 @@ const PostDetails: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("alunosPosts")}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.navigate("alunosPosts")}
+      >
         <Text style={styles.backButtonText}>Voltar</Text>
       </TouchableOpacity>
       <Text style={styles.title}>{post.title || "Sem título"}</Text>
-      <Text style={styles.description}>{post.description || "Sem descrição"}</Text>
+      <Text style={styles.description}>
+        {post.description || "Sem descrição"}
+      </Text>
       <Text style={styles.content}>{post.content || "Sem conteúdo"}</Text>
       <Text style={styles.author}>Autor: {post.author || "Desconhecido"}</Text>
     </View>
