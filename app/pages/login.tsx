@@ -12,7 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 
 export default function LoginComponent() {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   //   const { setToken } = useAuth();
@@ -33,7 +33,7 @@ export default function LoginComponent() {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    // navigation.goBack();
   };
 
   return (
