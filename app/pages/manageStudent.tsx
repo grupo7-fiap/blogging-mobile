@@ -11,18 +11,24 @@ import {
   Alert,
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import { Picker } from "@react-native-picker/picker";
 import api from "../api";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../App";
 
-const ManagePostComponent: React.FC = () => {
+type manageStudentScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "ManageStudent"
+>;
+
+const ManageStudent: React.FC = () => {
   const route = useRoute();
-  //   const { action, postId } = route.params as { action: string, postId: number };
+  //   const { action, id } = route.params as { action: string, id: number };
 
-  const [title, setTitle] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [conteudo, setConteudo] = useState("");
-  const [autor, setAutor] = useState("");
-  const [theme, setTheme] = useState("");
+  const navigation = useNavigation<manageStudentScreenNavigationProp>();
+
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [cpf, setCpf] = useState("");
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [createSuccess, setCreateSuccess] = useState(false);
   const [editSuccess, setEditSuccess] = useState(false);
@@ -33,98 +39,67 @@ const ManagePostComponent: React.FC = () => {
   //   MOCK PARA TESTE
   const dataTest: "create" | "edit" = "create";
   const action = dataTest;
-  const postId = 1;
+  const id = 1;
   //   MOCK PARA TESTE
 
-  const themes = [
-    "Matemática",
-    "Ciências",
-    "História",
-    "Geografia",
-    "Literatura",
-    "Esporte",
-    "Saúde",
-    "Artes",
-    "Física",
-    "Química",
-    "Biologia",
-    "Tecnologia",
-    "Informática",
-    "Economia",
-    "Filosofia",
-    "Sociologia",
-    "Inglês",
-    "Francês",
-    "Espanhol",
-    "Anúncios",
-  ];
-
   useEffect(() => {
-    setIsSaveDisabled(!(title && descricao && autor && theme));
-  }, [title, descricao, autor, theme]);
+    setIsSaveDisabled(!(email && name && cpf));
+  }, [email, name, cpf]);
 
   const handleSubmit = async () => {
     if (isSaveDisabled) {
       if (action === "create") {
-        await createPost();
+        await createUser();
         setShowCreateModal(false);
-        setTitle("");
-        setDescricao("");
-        setConteudo("");
-        setAutor("");
-        setTheme("");
-        // navigation.navigate("TabFlow2") --> navegar para a tela do Matheus
+        setName("");
+        setCpf("");
+        setEmail("");
+        // navigation.navigate(""); ----> Voltar para a tela do Matheus
       } else if (action === "edit") {
-        await editPost();
+        await editUser();
         setShowCreateModal(false);
-        setTitle("");
-        setDescricao("");
-        setConteudo("");
-        setAutor("");
-        setTheme("");
-        // navigation.navigate("TabFlow2") --> navegar para a tela do Matheus
+        setName("");
+        setCpf("");
+        setEmail("");
+        // navigation.navigate(""); ----> Voltar para a tela do Matheus
       }
     } else {
       console.error(`Ação inválida: ${action}`);
     }
   };
 
-  const createPost = async () => {
+  const createUser = async () => {
     setIsLoading(true);
     try {
       const body = {
-        title,
-        description: descricao,
-        content: conteudo,
-        author: autor,
-        subject: theme,
+        email: email,
+        name: name,
+        cpf: cpf,
       };
       console.log("Enviando dados:", body);
-      const response = await api.post("/posts", body);
+      const response = await api.post("/users", body);
       setCreateSuccess(true);
     } catch (error) {
-      console.error("Erro ao criar o post:", error);
+      console.error("Erro ao adicionar o aluno:", error);
       setCreateSuccess(false);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const editPost = async () => {
+  const editUser = async () => {
     setIsLoading(true);
     try {
       const body = {
-        title: title,
-        description: descricao,
-        content: conteudo,
-        author: autor,
-        subject: theme,
+        email: email,
+        name: name,
+        cpf: cpf,
       };
       console.log("Enviando dados:", body);
-      const response = await api.put(`/posts/admin/update/${postId}`, body);
+      const response = await api.put(`/users/${id}`, body);
       setCreateSuccess(true);
     } catch (error) {
-      console.error("Erro ao editar o post:", error);
+      console.error("Erro ao editar os dados do aluno:", error);
       setCreateSuccess(false);
     } finally {
       setIsLoading(false);
@@ -140,67 +115,42 @@ const ManagePostComponent: React.FC = () => {
       ) : (
         <View style={styles.form}>
           <Text style={styles.title}>
-            {action === "create" ? "Criar Nova Postagem" : "Editar Postagem"}
+            {action === "create"
+              ? "Cadastro de Estudante"
+              : "Editar Cadastro de Estudante"}
           </Text>
 
           <View style={{ width: "60%", justifyContent: "center" }}>
-            {/* Título */}
-            <Text style={styles.label}>Título</Text>
+            {/* Nome */}
+            <Text style={styles.label}>Nome</Text>
             <TextInput
               style={styles.input}
-              placeholder="Digite o título da postagem"
-              value={title}
-              onChangeText={setTitle}
+              placeholder="Digite o nome do estudante"
+              value={name}
+              onChangeText={setName}
             />
 
-            {/* Descrição */}
-            <Text style={styles.label}>Descrição</Text>
+            {/* E-mail */}
+            <Text style={styles.label}>E-mail</Text>
             <TextInput
-              style={[styles.input, styles.textareaDescription]}
-              placeholder="Digite a descrição da postagem"
-              value={descricao}
-              onChangeText={setDescricao}
-              multiline
+              style={[styles.input]}
+              placeholder="Digite o e-mail do estudante"
+              value={email}
+              onChangeText={setEmail}
             />
 
-            {/* Conteúdo */}
-            <Text style={styles.label}>Conteúdo</Text>
+            {/* CPF */}
+            <Text style={styles.label}>CPF</Text>
             <TextInput
-              style={[styles.input, styles.textarea]}
-              placeholder="Digite o conteúdo da postagem"
-              value={conteudo}
-              onChangeText={setConteudo}
-              multiline
+              style={[styles.input]}
+              placeholder="Digite o CPF do estudante"
+              value={cpf}
+              onChangeText={setCpf}
             />
-
-            {/* Autor */}
-            <Text style={styles.label}>Autor</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Digite o autor da postagem"
-              value={autor}
-              onChangeText={setAutor}
-            />
-
-            {/* Tema */}
-            <Text style={styles.label}>Selecione um Tema</Text>
-            <Picker
-              selectedValue={theme}
-              style={styles.picker}
-              onValueChange={(itemValue) => setTheme(itemValue)}
-            >
-              <Picker.Item label="Selecione um tema" value="" />
-              {themes.map((theme) => (
-                <Picker.Item key={theme} label={theme} value={theme} />
-              ))}
-            </Picker>
 
             {/* Botões */}
             <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={() => Alert.alert("Voltando...")}
-              >
+              <TouchableOpacity style={styles.backButton}>
                 <Text style={styles.buttonText}>Voltar</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -223,13 +173,13 @@ const ManagePostComponent: React.FC = () => {
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>
               {action === "create"
-                ? "Erro ao criar postagem"
-                : "Erro ao editar postagem"}
+                ? "Erro ao adicionar o usuário"
+                : "Erro ao editar o usuário"}
             </Text>
             <Text style={styles.modalBody}>
               {action === "create"
-                ? " Não foi possível criar a postagem. Tente novamente mais tarde."
-                : " Não foi possível editar a postagem. Tente novamente mais tarde."}
+                ? " Não foi possível adicionar o usuário. Tente novamente mais tarde."
+                : " Não foi possível editar o usuário. Tente novamente mais tarde."}
             </Text>
             <TouchableOpacity onPress={closeModal}>
               <Text style={styles.closeButton}>Fechar</Text>
@@ -241,7 +191,7 @@ const ManagePostComponent: React.FC = () => {
   );
 };
 
-export default ManagePostComponent;
+export default ManageStudent;
 
 const styles = StyleSheet.create({
   container: {

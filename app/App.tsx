@@ -8,21 +8,25 @@ import AlunosPost from "./(tabs)/alunosPosts";
 import PostDetails from "./(tabs)/postDetalhes";
 // import TabOneScreen from "./(tabsTeacher)/one";
 // import TabTwoScreen from "./(tabsTeacher)/two";
-import ManagePostComponent from "./(tabsTeacher)/managePosts";
+import ManagePostComponent from "./pages/managePosts";
+import ManageTeacher from "./pages/manageTeacher";
+import ManageStudent from "./pages/manageStudent";
 
 // Tipos das rotas principais
 export type RootStackParamList = {
   Home: undefined;
   Login: undefined;
-  Manage: { action: string; postId: number };
+  ManagePost: { action: string; postId: number };
+  ManageTeacher: { action: string; id: number };
+  ManageStudent: { action: string; id: number };
   TabFlow1: undefined; // Fluxo com abas para Professores
   TabFlow2: undefined; // Fluxo com abas para Alunos
 };
 
 // Tipos específicos para o fluxo de alunos
 export type AlunosStackParamList = {
-  alunosPosts: undefined; // Lista de posts dos alunos
-  postDetalhes: { id: number }; // Detalhes do post
+  alunosPosts: undefined;
+  postDetalhes: { id: number };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -48,13 +52,13 @@ function AlunosStack() {
       <AlunosStackNavigator.Screen
         name="alunosPosts"
         component={AlunosTabs}
-        options={{ headerShown: false }} // Esconde o header para as abas
+        options={{ headerShown: false }}
       />
       {/* Tela de detalhes fora das abas */}
       <AlunosStackNavigator.Screen
         name="postDetalhes"
         component={PostDetails}
-        options={{ title: "Detalhes do Post" }} // Mostra título customizado
+        options={{ title: "Detalhes do Post" }}
       />
     </AlunosStackNavigator.Navigator>
   );
@@ -91,8 +95,20 @@ export default function App() {
         />
 
         <Stack.Screen
-          name="Manage"
+          name="ManagePost"
           component={ManagePostComponent}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="ManageTeacher"
+          component={ManageTeacher}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="ManageStudent"
+          component={ManageStudent}
           options={{ headerShown: false }}
         />
 
