@@ -136,9 +136,6 @@ const ManageTeacher: React.FC = () => {
 
             {/* Botões */}
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.backButton}>
-                <Text style={styles.buttonText}>Voltar</Text>
-              </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.button, isSaveDisabled && styles.disabledButton]}
                 onPress={handleSubmit}
@@ -240,8 +237,6 @@ const styles = StyleSheet.create({
   },
 
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
     marginTop: 20,
   },
 
@@ -251,7 +246,6 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     flex: 1,
     alignItems: "center",
-    marginLeft: 10,
   },
 
   disabledButton: {
