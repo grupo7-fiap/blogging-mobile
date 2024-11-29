@@ -8,11 +8,13 @@ import AlunosPost from "./(tabs)/alunosPosts";
 import PostDetails from "./(tabs)/postDetalhes";
 // import TabOneScreen from "./(tabsTeacher)/one";
 // import TabTwoScreen from "./(tabsTeacher)/two";
+import ManagePostComponent from "./(tabsTeacher)/managePosts";
 
 // Tipos das rotas principais
 export type RootStackParamList = {
   Home: undefined;
   Login: undefined;
+  Manage: { action: string; postId: number };
   TabFlow1: undefined; // Fluxo com abas para Professores
   TabFlow2: undefined; // Fluxo com abas para Alunos
 };
@@ -86,6 +88,12 @@ export default function App() {
           name="Login"
           component={LoginComponent}
           options={{ title: "Login" }}
+        />
+
+        <Stack.Screen
+          name="Manage"
+          component={ManagePostComponent}
+          options={{ headerShown: false }}
         />
 
         {/* <Stack.Screen
