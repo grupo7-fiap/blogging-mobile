@@ -77,7 +77,7 @@ const ManageStudent: React.FC = () => {
         cpf: cpf,
       };
       console.log("Enviando dados:", body);
-      const response = await api.post("/users", body);
+      const response = await api.post("/students", body);
       setCreateSuccess(true);
     } catch (error) {
       console.error("Erro ao adicionar o aluno:", error);
@@ -96,7 +96,7 @@ const ManageStudent: React.FC = () => {
         cpf: cpf,
       };
       console.log("Enviando dados:", body);
-      const response = await api.put(`/users/${id}`, body);
+      const response = await api.put(`/students/${id}`, body);
       setCreateSuccess(true);
     } catch (error) {
       console.error("Erro ao editar os dados do aluno:", error);

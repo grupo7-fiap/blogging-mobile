@@ -75,7 +75,7 @@ const ManageTeacher: React.FC = () => {
         name: name,
       };
       console.log("Enviando dados:", body);
-      const response = await api.post("/posts", body);
+      const response = await api.post("/users", body);
       setCreateSuccess(true);
     } catch (error) {
       console.error("Erro ao criar o post:", error);
@@ -93,7 +93,7 @@ const ManageTeacher: React.FC = () => {
         name: name,
       };
       console.log("Enviando dados:", body);
-      const response = await api.put(`/posts/admin/update/${id}`, body);
+      const response = await api.put(`/users${id}`, body);
       setCreateSuccess(true);
     } catch (error) {
       console.error("Erro ao editar o post:", error);
