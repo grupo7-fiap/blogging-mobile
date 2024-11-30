@@ -1,42 +1,31 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { Text, View } from "@/components/Themed";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../App";
-
-type HomeScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "Home"
->;
+import { Link } from "expo-router";
 
 export default function HomeScreen() {
-  const navigation = useNavigation<HomeScreenNavigationProp>();
-
   return (
-    <>
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.styledButton}
-          onPress={() => navigation.navigate("Login")}
-        >
+    <View style={styles.container}>
+      {/* Botão para Professores e Funcionários */}
+      <TouchableOpacity style={styles.styledButton}>
+        <Link href="/pages/login" style={styles.link}>
           <Text style={styles.mainText}>PROFESSORES E FUNCIONÁRIOS</Text>
           <View style={styles.divider} />
           <Text style={styles.buttonText}>
             Acesse o portal de professores e funcionários
           </Text>
-        </TouchableOpacity>
+        </Link>
+      </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.styledButton}
-          onPress={() => navigation.navigate("TabFlow2")}
-        >
+      {/* Botão para Alunos */}
+      <TouchableOpacity style={styles.styledButton}>
+        <Link href="/(tabs)/alunosPosts" style={styles.link}>
           <Text style={styles.mainText}>ALUNOS</Text>
           <View style={styles.divider} />
           <Text style={styles.buttonText}>Acesse o portal de estudantes</Text>
-        </TouchableOpacity>
-      </View>
-    </>
+        </Link>
+      </TouchableOpacity>
+    </View>
   );
 }
 
@@ -48,7 +37,6 @@ const styles = StyleSheet.create({
     height: 100,
     backgroundColor: "#111111",
   },
-
   styledButton: {
     backgroundColor: "#800020",
     color: "white",
@@ -65,22 +53,23 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     cursor: "pointer",
   },
-
   divider: {
     width: "100%",
     borderTopWidth: 2,
     borderTopColor: "#ddd",
     marginVertical: 10,
   },
-
   mainText: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
   },
-
   buttonText: {
     fontSize: 18,
     color: "#ddd",
+  },
+  link: {
+    color: "white",
+    textDecorationLine: "none",
   },
 });

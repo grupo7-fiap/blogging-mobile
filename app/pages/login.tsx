@@ -7,33 +7,36 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { router } from "expo-router";
 // import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 
 export default function LoginComponent() {
-  // const navigation = useNavigation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  //   const { setToken } = useAuth();
+  // const { setToken } = useAuth();
 
   const handleLogin = async () => {
-    //     try {
-    //       const response = await axios.post("http://localhost:3000/auth/login", {
-    //         username,
-    //         password,
-    //       });
-    //       // No React Native, use AsyncStorage ao invés de localStorage
-    //       await AsyncStorage.setItem("token", response.data.token);
-    //       setToken(response.data.token);
-    //       navigation.navigate("AdminPosts", { action: "create" });
-    //     } catch (error) {
-    //       console.error("Login failed", error);
-    //     }
+    try {
+      // Simulando uma requisição de login
+      const response = await axios.post("http://localhost:3000/auth/login", {
+        username,
+        password,
+      });
+
+      // Salvar o token (use algo como SecureStore em produção)
+      // await AsyncStorage.setItem("token", response.data.token);
+      // setToken(response.data.token);
+
+      // Navegar para outra página após login bem-sucedido
+      router.push("/adminPosts?action=create");
+    } catch (error) {
+      console.error("Login failed", error);
+    }
   };
 
   const handleBack = () => {
-    // navigation.goBack();
+    router.back(); // Voltar para a tela anterior
   };
 
   return (

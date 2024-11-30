@@ -6,23 +6,12 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from "react-native";
-import { useRoute, useNavigation } from "@react-navigation/native";
-import { RouteProp } from "@react-navigation/native";
-import { AlunosStackParamList } from "../App";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import api from "../api";
 
-type PostDetailsRouteProp = RouteProp<AlunosStackParamList, "postDetalhes">;
-
-type NavigationProps = NativeStackNavigationProp<
-  AlunosStackParamList,
-  "postDetalhes"
->;
-
 const PostDetails: React.FC = () => {
-  const route = useRoute();
-  const navigation = useNavigation<NavigationProps>();
-  const { id } = route.params as { id: number };
+  const router = useRouter();
+  const { id } = useLocalSearchParams(); // Obtém o parâmetro dinâmico `id`
   const [post, setPost] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -31,14 +20,14 @@ const PostDetails: React.FC = () => {
       try {
         const response = await api.get(`/posts/${id}`);
         setPost(response.data.data);
-        setLoading(false);
       } catch (error) {
         console.error("Erro ao buscar o post:", error);
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchPost();
+    if (id) fetchPost();
   }, [id]);
 
   if (loading) {
@@ -62,7 +51,7 @@ const PostDetails: React.FC = () => {
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.backButton}
-        onPress={() => navigation.navigate("alunosPosts")}
+        onPress={() => router.push("/(tabs)/alunosPosts")} // Navega de volta para a lista de posts
       >
         <Text style={styles.backButtonText}>Voltar</Text>
       </TouchableOpacity>

@@ -9,15 +9,8 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { AlunosStackParamList } from "../App";
-import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { useRouter } from "expo-router";
 import api from "../api";
-
-type AlunosPostsNavigationProp = BottomTabNavigationProp<
-  AlunosStackParamList,
-  "alunosPosts"
->;
 
 const screenWidth = Dimensions.get("window").width;
 const numColumns = 2;
@@ -28,7 +21,7 @@ const AlunosPost: React.FC = () => {
   const [filteredPosts, setFilteredPosts] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  const navigation = useNavigation<AlunosPostsNavigationProp>();
+  const router = useRouter();
 
   const fetchPosts = async () => {
     try {
@@ -67,7 +60,7 @@ const AlunosPost: React.FC = () => {
       </Text>
       <TouchableOpacity
         style={styles.viewButton}
-        onPress={() => navigation.navigate("postDetalhes", { id: item.id })}
+        onPress={() => router.push({ pathname: "/(tabs)/postDetalhes", params: { id: item.id } })}
       >
         <Text style={styles.buttonText}>Visualizar</Text>
       </TouchableOpacity>
