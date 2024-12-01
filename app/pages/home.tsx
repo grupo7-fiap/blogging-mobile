@@ -12,17 +12,20 @@ export default function HomeScreen() {
           <Text style={styles.mainText}>PROFESSORES E FUNCIONÁRIOS</Text>
           <View style={styles.divider} />
           <Text style={styles.buttonText}>
-            Acesse o portal de professores e funcionários
+            - Acesse o portal de professores e funcionários
           </Text>
         </Link>
       </TouchableOpacity>
 
       {/* Botão para Alunos */}
       <TouchableOpacity style={styles.styledButton}>
-        <Link href="/(tabs)/alunosPosts" style={styles.link}>
+        <Link href="/pages/students/alunosPosts" style={styles.link}>
           <Text style={styles.mainText}>ALUNOS</Text>
           <View style={styles.divider} />
-          <Text style={styles.buttonText}>Acesse o portal de estudantes</Text>
+          <Text style={styles.buttonText}>
+            {" "}
+            - Acesse o portal de estudantes
+          </Text>
         </Link>
       </TouchableOpacity>
     </View>
@@ -54,6 +57,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
   },
   divider: {
+    height: 1,
     width: "100%",
     borderTopWidth: 2,
     borderTopColor: "#ddd",

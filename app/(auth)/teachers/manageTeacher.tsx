@@ -8,26 +8,16 @@ import {
   ScrollView,
   Modal,
   ActivityIndicator,
-  Alert,
 } from "react-native";
-import { useRoute, useNavigation } from "@react-navigation/native";
-import api from "../api";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../App";
-
-type manageTeacherScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "ManageTeacher"
->;
+import api from "../../api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 
 const ManageTeacher: React.FC = () => {
-  const route = useRoute();
-  const navigation = useNavigation<manageTeacherScreenNavigationProp>();
-
   //   const { action, id } = route.params as { action: string, id: number };
 
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [createSuccess, setCreateSuccess] = useState(false);
   const [editSuccess, setEditSuccess] = useState(false);
@@ -35,32 +25,34 @@ const ManageTeacher: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const router = useRouter();
+
   //   MOCK PARA TESTE
   const dataTest: "create" | "edit" = "create";
   const action = dataTest;
-  const id = 1;
+  const teacherId = 1;
   //   MOCK PARA TESTE
 
   useEffect(() => {
-    setIsSaveDisabled(!(password && name));
-  }, [password, name]);
+    setIsSaveDisabled(!(password && username));
+  }, [password, username]);
 
   const closeModal = () => setShowCreateModal(false);
 
   const handleSubmit = async () => {
-    if (isSaveDisabled) {
+    if (!isSaveDisabled) {
       if (action === "create") {
         await createUser();
         setShowCreateModal(false);
-        setPassword("");
-        setName("");
-        // navigation.navigate(""); ----> Voltar para a tela do Matheus
+        resetForm();
+        // TROCAR PARA TELA DO MATHEUS
+        router.push("/(auth)/testAdminPosts");
       } else if (action === "edit") {
         await editUser();
         setShowCreateModal(false);
-        setPassword("");
-        setName("");
-        // navigation.navigate("") --> Voltar para a tela do Matheus
+        resetForm();
+        // TROCAR PARA TELA DO MATHEUS
+        router.push("/(auth)/testAdminPosts");
       }
     } else {
       console.error(`Ação inválida: ${action}`);
@@ -70,16 +62,18 @@ const ManageTeacher: React.FC = () => {
   const createUser = async () => {
     setIsLoading(true);
     try {
+      const token = await AsyncStorage.getItem("token");
       const body = {
-        password: password,
-        name: name,
+        username,
+        password,
       };
-      console.log("Enviando dados:", body);
-      const response = await api.post("/users", body);
-      setCreateSuccess(true);
+      await api.post("/auth/register", body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     } catch (error) {
-      console.error("Erro ao criar o post:", error);
-      setCreateSuccess(false);
+      console.error("Erro ao criar o professor:", error);
     } finally {
       setIsLoading(false);
     }
@@ -88,19 +82,26 @@ const ManageTeacher: React.FC = () => {
   const editUser = async () => {
     setIsLoading(true);
     try {
+      const token = await AsyncStorage.getItem("token");
       const body = {
-        password: password,
-        name: name,
+        username,
+        password,
       };
-      console.log("Enviando dados:", body);
-      const response = await api.put(`/users${id}`, body);
-      setCreateSuccess(true);
+      await api.put(`/users/${teacherId}`, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     } catch (error) {
-      console.error("Erro ao editar o post:", error);
-      setCreateSuccess(false);
+      console.error("Erro ao editar o professor:", error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const resetForm = () => {
+    setPassword("");
+    setUsername("");
   };
 
   return (
@@ -121,8 +122,8 @@ const ManageTeacher: React.FC = () => {
             <TextInput
               style={styles.input}
               placeholder="Digite o o seu nome"
-              value={name}
-              onChangeText={setName}
+              value={username}
+              onChangeText={setUsername}
             />
 
             {/* Senha */}

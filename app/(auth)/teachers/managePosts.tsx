@@ -8,27 +8,18 @@ import {
   ScrollView,
   Modal,
   ActivityIndicator,
-  Alert,
 } from "react-native";
-import { useRoute, useNavigation } from "@react-navigation/native";
-import api from "../api";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../App";
+import { Picker } from "@react-native-picker/picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import api from "../../api";
+import { useRouter } from "expo-router";
 
-type manageStudentScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "ManageStudent"
->;
-
-const ManageStudent: React.FC = () => {
-  const route = useRoute();
-  //   const { action, id } = route.params as { action: string, id: number };
-
-  const navigation = useNavigation<manageStudentScreenNavigationProp>();
-
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [cpf, setCpf] = useState("");
+const ManagePostComponent: React.FC = () => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [content, setContent] = useState("");
+  const [author, setAuthor] = useState("");
+  const [subject, setSubject] = useState("");
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
   const [createSuccess, setCreateSuccess] = useState(false);
   const [editSuccess, setEditSuccess] = useState(false);
@@ -36,70 +27,105 @@ const ManageStudent: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const router = useRouter();
+
   //   MOCK PARA TESTE
   const dataTest: "create" | "edit" = "create";
   const action = dataTest;
-  const id = 1;
+  const postId = 1;
   //   MOCK PARA TESTE
 
+  const subjects = [
+    "Matemática",
+    "Ciências",
+    "História",
+    "Geografia",
+    "Literatura",
+    "Esporte",
+    "Saúde",
+    "Artes",
+    "Física",
+    "Química",
+    "Biologia",
+    "Tecnologia",
+    "Informática",
+    "Economia",
+    "Filosofia",
+    "Sociologia",
+    "Inglês",
+    "Francês",
+    "Espanhol",
+    "Anúncios",
+  ];
+
   useEffect(() => {
-    setIsSaveDisabled(!(email && name && cpf));
-  }, [email, name, cpf]);
+    setIsSaveDisabled(!(title && description && author && subject));
+  }, [title, description, author, subject]);
 
   const handleSubmit = async () => {
-    if (isSaveDisabled) {
+    if (!isSaveDisabled) {
       if (action === "create") {
-        await createUser();
+        await createPost();
         setShowCreateModal(false);
-        setName("");
-        setCpf("");
-        setEmail("");
-        // navigation.navigate(""); ----> Voltar para a tela do Matheus
+        resetForm();
+        // TROCAR PARA TELA DO MATHEUS
+        router.push("../testAdminPosts.tsx");
       } else if (action === "edit") {
-        await editUser();
+        await editPost();
         setShowCreateModal(false);
-        setName("");
-        setCpf("");
-        setEmail("");
-        // navigation.navigate(""); ----> Voltar para a tela do Matheus
+        resetForm();
+        // TROCAR PARA TELA DO MATHEUS
+        router.push("../testAdminPosts.tsx");
       }
     } else {
       console.error(`Ação inválida: ${action}`);
     }
   };
 
-  const createUser = async () => {
+  const createPost = async () => {
     setIsLoading(true);
     try {
+      const token = await AsyncStorage.getItem("token");
       const body = {
-        email: email,
-        name: name,
-        cpf: cpf,
+        title,
+        description,
+        content,
+        author,
+        subject,
       };
-      console.log("Enviando dados:", body);
-      const response = await api.post("/students", body);
+      await api.post("/posts", body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setCreateSuccess(true);
     } catch (error) {
-      console.error("Erro ao adicionar o aluno:", error);
+      console.error("Erro ao criar o post:", error);
       setCreateSuccess(false);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const editUser = async () => {
+  const editPost = async () => {
     setIsLoading(true);
     try {
+      const token = await AsyncStorage.getItem("token");
       const body = {
-        email: email,
-        name: name,
-        cpf: cpf,
+        title,
+        description,
+        content,
+        author,
+        subject,
       };
-      console.log("Enviando dados:", body);
-      const response = await api.put(`/students/${id}`, body);
+      await api.put(`/posts/admin/update/${postId}`, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setCreateSuccess(true);
     } catch (error) {
-      console.error("Erro ao editar os dados do aluno:", error);
+      console.error("Erro ao editar o post:", error);
       setCreateSuccess(false);
     } finally {
       setIsLoading(false);
@@ -108,6 +134,14 @@ const ManageStudent: React.FC = () => {
 
   const closeModal = () => setShowCreateModal(false);
 
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setContent("");
+    setAuthor("");
+    setSubject("");
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {isLoading ? (
@@ -115,41 +149,66 @@ const ManageStudent: React.FC = () => {
       ) : (
         <View style={styles.form}>
           <Text style={styles.title}>
-            {action === "create"
-              ? "Cadastro de Estudante"
-              : "Editar Cadastro de Estudante"}
+            {action === "create" ? "Criar Nova Postagem" : "Editar Postagem"}
           </Text>
 
           <View style={{ width: "60%", justifyContent: "center" }}>
-            {/* Nome */}
-            <Text style={styles.label}>Nome</Text>
+            {/* Título */}
+            <Text style={styles.label}>Título</Text>
             <TextInput
               style={styles.input}
-              placeholder="Digite o nome do estudante"
-              value={name}
-              onChangeText={setName}
+              placeholder="Digite o título da postagem"
+              value={title}
+              onChangeText={setTitle}
             />
 
-            {/* E-mail */}
-            <Text style={styles.label}>E-mail</Text>
+            {/* Descrição */}
+            <Text style={styles.label}>Descrição</Text>
             <TextInput
-              style={[styles.input]}
-              placeholder="Digite o e-mail do estudante"
-              value={email}
-              onChangeText={setEmail}
+              style={[styles.input, styles.textareaDescription]}
+              placeholder="Digite a descrição da postagem"
+              value={description}
+              onChangeText={setDescription}
+              multiline
             />
 
-            {/* CPF */}
-            <Text style={styles.label}>CPF</Text>
+            {/* Conteúdo */}
+            <Text style={styles.label}>Conteúdo</Text>
             <TextInput
-              style={[styles.input]}
-              placeholder="Digite o CPF do estudante"
-              value={cpf}
-              onChangeText={setCpf}
+              style={[styles.input, styles.textarea]}
+              placeholder="Digite o conteúdo da postagem"
+              value={content}
+              onChangeText={setContent}
+              multiline
             />
+
+            {/* Autor */}
+            <Text style={styles.label}>Autor</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Digite o autor da postagem"
+              value={author}
+              onChangeText={setAuthor}
+            />
+
+            {/* Tema */}
+            <Text style={styles.label}>Selecione um Tema</Text>
+            <Picker
+              selectedValue={subject}
+              style={styles.picker}
+              onValueChange={(itemValue) => setSubject(itemValue)}
+            >
+              <Picker.Item label="Selecione um tema" value="" />
+              {subjects.map((subject) => (
+                <Picker.Item key={subject} label={subject} value={subject} />
+              ))}
+            </Picker>
 
             {/* Botões */}
             <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.backButton}>
+                <Text style={styles.buttonText}>Voltar</Text>
+              </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.button, isSaveDisabled && styles.disabledButton]}
                 onPress={handleSubmit}
@@ -170,13 +229,13 @@ const ManageStudent: React.FC = () => {
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>
               {action === "create"
-                ? "Erro ao adicionar o usuário"
-                : "Erro ao editar o usuário"}
+                ? "Erro ao criar postagem"
+                : "Erro ao editar postagem"}
             </Text>
             <Text style={styles.modalBody}>
               {action === "create"
-                ? " Não foi possível adicionar o usuário. Tente novamente mais tarde."
-                : " Não foi possível editar o usuário. Tente novamente mais tarde."}
+                ? " Não foi possível criar a postagem. Tente novamente mais tarde."
+                : " Não foi possível editar a postagem. Tente novamente mais tarde."}
             </Text>
             <TouchableOpacity onPress={closeModal}>
               <Text style={styles.closeButton}>Fechar</Text>
@@ -188,7 +247,7 @@ const ManageStudent: React.FC = () => {
   );
 };
 
-export default ManageStudent;
+export default ManagePostComponent;
 
 const styles = StyleSheet.create({
   container: {
@@ -251,6 +310,8 @@ const styles = StyleSheet.create({
   },
 
   buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 20,
   },
 
@@ -258,7 +319,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#800020",
     padding: 10,
     borderRadius: 4,
+    flex: 1,
     alignItems: "center",
+    marginLeft: 10,
   },
 
   disabledButton: {
