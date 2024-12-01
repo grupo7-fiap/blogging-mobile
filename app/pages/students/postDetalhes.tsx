@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import api from "../api";
+import api from "@/app/api";
 
 const PostDetails: React.FC = () => {
   const router = useRouter();
@@ -51,7 +51,7 @@ const PostDetails: React.FC = () => {
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.backButton}
-        onPress={() => router.push("/(tabs)/alunosPosts")} // Navega de volta para a lista de posts
+        onPress={() => router.push("/pages/students/alunosPosts")} // Navega de volta para a lista de posts
       >
         <Text style={styles.backButtonText}>Voltar</Text>
       </TouchableOpacity>
@@ -95,13 +95,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    color: "#800020",
+    color: "#ffffff",
     marginBottom: 20,
     textAlign: "center",
   },
   description: {
     fontSize: 16,
-    color: "#4d4d4d",
+    color: "#d3d3d3",
     marginBottom: 10,
     lineHeight: 24,
   },
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
   author: {
     fontSize: 16,
-    color: "#800020",
+    color: "#ffffff",
     textAlign: "right",
     fontStyle: "italic",
   },

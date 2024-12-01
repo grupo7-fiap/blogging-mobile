@@ -10,7 +10,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
-import api from "../api";
+import api from "@/app/api";
 
 const screenWidth = Dimensions.get("window").width;
 const numColumns = 2;
@@ -40,7 +40,7 @@ const AlunosPost: React.FC = () => {
       (post) =>
         post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         post.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.author.toLowerCase().includes(searchTerm.toLowerCase())
+        post.author.toLowerCase().includes(searchTerm.toLowerCase()),
     );
     setFilteredPosts(results);
   }, [searchTerm, posts]);
@@ -60,7 +60,12 @@ const AlunosPost: React.FC = () => {
       </Text>
       <TouchableOpacity
         style={styles.viewButton}
-        onPress={() => router.push({ pathname: "/(tabs)/postDetalhes", params: { id: item.id } })}
+        onPress={() =>
+          router.push({
+            pathname: "/pages/students/postDetalhes",
+            params: { id: item.id },
+          })
+        }
       >
         <Text style={styles.buttonText}>Visualizar</Text>
       </TouchableOpacity>
@@ -125,7 +130,7 @@ const styles = StyleSheet.create({
   },
   postTitle: {
     fontSize: 16,
-    color: "#800020",
+    color: "#ffffff",
     marginBottom: 5,
   },
   postDescription: {
@@ -135,7 +140,7 @@ const styles = StyleSheet.create({
   },
   postAuthor: {
     fontSize: 14,
-    color: "#800020",
+    color: "#d3d3d3",
     fontStyle: "italic",
   },
   viewButton: {
@@ -148,6 +153,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 12,
+    textTransform: "uppercase",
   },
   loadingContainer: {
     flex: 1,
