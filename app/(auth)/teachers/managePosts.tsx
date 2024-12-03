@@ -68,14 +68,12 @@ const ManagePostComponent: React.FC = () => {
         await createPost();
         setShowCreateModal(false);
         resetForm();
-        // TROCAR PARA TELA DO MATHEUS
-        router.push("../testAdminPosts.tsx");
+        router.push("../lists/adminPostList");
       } else if (action === "edit") {
         await editPost();
         setShowCreateModal(false);
         resetForm();
-        // TROCAR PARA TELA DO MATHEUS
-        router.push("../testAdminPosts.tsx");
+        router.push("../lists/adminPostList");
       }
     } else {
       console.error(`Ação inválida: ${action}`);

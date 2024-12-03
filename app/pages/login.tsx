@@ -27,7 +27,7 @@ export default function LoginComponent() {
       await AsyncStorage.setItem("token", token);
 
       // rota do matheus
-      router.push("/(auth)/testAdminPosts");
+      router.push("/lists/adminPostList");
     } catch (error) {
       console.error("Login failed", error);
     }

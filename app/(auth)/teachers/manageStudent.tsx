@@ -42,14 +42,12 @@ const ManageStudent: React.FC = () => {
         await createUser();
         setShowCreateModal(false);
         resetForm();
-        // TROCAR PARA TELA DO MATHEUS
-        router.push("/(auth)/testAdminPosts");
+        router.push("/(auth)/lists/adminAlunosList");
       } else if (action === "edit") {
         await editUser();
         setShowCreateModal(false);
         resetForm();
-        // TROCAR PARA TELA DO MATHEUS
-        router.push("/(auth)/testAdminPosts");
+        router.push("/(auth)/lists/adminAlunosList");
       }
     } else {
       console.error(`Ação inválida: ${action}`);

@@ -46,13 +46,13 @@ const ManageTeacher: React.FC = () => {
         setShowCreateModal(false);
         resetForm();
         // TROCAR PARA TELA DO MATHEUS
-        router.push("/(auth)/testAdminPosts");
+        router.push("/(auth)/lists/adminProfessoresList");
       } else if (action === "edit") {
         await editUser();
         setShowCreateModal(false);
         resetForm();
         // TROCAR PARA TELA DO MATHEUS
-        router.push("/(auth)/testAdminPosts");
+        router.push("/(auth)/lists/adminProfessoresList");
       }
     } else {
       console.error(`Ação inválida: ${action}`);
