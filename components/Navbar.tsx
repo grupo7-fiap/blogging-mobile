@@ -1,8 +1,9 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import Icon from "react-native-vector-icons/MaterialIcons"; // Ou outra biblioteca de ícones
+import { useNavigationState } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 interface NavbarProps {
   title: string;
@@ -11,10 +12,29 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ title, sidebarOpen, toggleSidebar }) => {
-  const navigation = useNavigation();
+  const router = useRouter();
 
-  const handleCreatePost = () => {
-    navigation.navigate("Manage", { action: "create" });
+  // Obtém a rota atual
+  const currentRoute = useNavigationState((state) => state.routes[state.index]?.name);
+
+  const handleCreate = (action: string) => {
+    // Define a rota correta com base na rota atual
+    let targetRoute = "";
+    if (currentRoute === "lists/adminPostList") {
+      targetRoute = "../teachers/managePosts";
+    } else if (currentRoute === "lists/adminAlunosList") {
+      targetRoute = "../teachers/manageStudent";
+    } else if (currentRoute === "lists/adminProfessoresList") {
+      targetRoute = "../teachers/manageTeacher";
+    }
+
+    // Redireciona apenas se a rota foi definida
+    if (targetRoute) {
+      router.push({
+        pathname: targetRoute,
+        params: { action },
+      });
+    }
   };
 
   return (
@@ -26,16 +46,15 @@ const Navbar: React.FC<NavbarProps> = ({ title, sidebarOpen, toggleSidebar }) =>
         </TouchableOpacity>
       ) : (
         <TouchableOpacity onPress={toggleSidebar} style={styles.hamburgerIcon}>
-          <Icon name="menu" size={24} color="#fff" /> {/* Substitua o nome do ícone conforme necessário */}
+          <Icon name="menu" size={24} color="#fff" />
         </TouchableOpacity>
       )}
-
 
       {/* Título */}
       <Text style={styles.title}>{title}</Text>
 
       {/* Botão de criar */}
-      <TouchableOpacity onPress={handleCreatePost} style={styles.actionButton}>
+      <TouchableOpacity onPress={() => handleCreate("create")} style={styles.actionButton}>
         <Text style={styles.buttonText}>Criar</Text>
       </TouchableOpacity>
     </View>
@@ -60,9 +79,9 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     textAlign: "center",
-    position: "absolute", // Centraliza o título no eixo horizontal
+    position: "absolute",
     left: "50%",
-    transform: [{ translateX: -50 }], // Corrige a centralização com base na largura
+    transform: [{ translateX: -50 }],
   },
   hamburgerIcon: {
     position: "absolute",
@@ -93,4 +112,3 @@ const styles = StyleSheet.create({
 });
 
 export default Navbar;
-

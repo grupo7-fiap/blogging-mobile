@@ -24,7 +24,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ Id, onConfirm, onClose }) => 
       <View style={styles.overlay}>
         <View style={styles.modalContent}>
           <Text style={styles.modalHeader}>Aviso</Text>
-          <Text style={styles.modalBody}>Deseja realmente deletar esse post?</Text>
+          <Text style={styles.modalBody}>Deseja realmente deletar?</Text>
           <View style={styles.modalFooter}>
             <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
               <Text style={styles.buttonText}>Cancelar</Text>

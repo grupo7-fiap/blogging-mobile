@@ -7,8 +7,8 @@ import {
   Animated,
   Dimensions,
 } from "react-native";
-import { useRouter } from "expo-router";
-import Icon from "react-native-vector-icons/FontAwesome"; // Substituto para react-icons
+import { useRouter, usePathname } from "expo-router";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const { width } = Dimensions.get("window");
 
@@ -19,6 +19,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
   const router = useRouter();
+  const currentRoute = usePathname(); // Obtém a rota atual
   const sidebarTranslateX = new Animated.Value(isOpen ? 0 : -250);
 
   // Animação para abrir/fechar a Sidebar
@@ -31,8 +32,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
   }, [isOpen]);
 
   const handleNavigation = (route: string) => {
-    router.push(route);
-    toggleSidebar(); // Fecha a Sidebar após a navegação
+    if (currentRoute !== route) {
+      router.push(route);
+      toggleSidebar(); // Fecha a Sidebar após a navegação
+    }
+  };
+
+  // Função para determinar o estilo da rota ativa
+  const getNavLinkStyle = (route: string) => {
+    return {
+      color: currentRoute === route ? "#800020" : "#fff",
+    };
   };
 
   return (
@@ -52,21 +62,30 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
         <View style={styles.navLinks}>
           <TouchableOpacity
             style={styles.navLinkItem}
-            onPress={() => handleNavigation("/adminPostList")}
+            onPress={() => handleNavigation("lists/adminPostList")}
+            disabled={currentRoute === "/lists/adminPostList"} // Desabilita se estiver na rota
           >
-            <Text style={styles.navLinkText}>Posts</Text>
+            <Text style={[styles.navLinkText, getNavLinkStyle("/lists/adminPostList")]}>
+              Posts
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.navLinkItem}
-            onPress={() => handleNavigation("/adminAlunosList")}
+            onPress={() => handleNavigation("lists/adminAlunosList")}
+            disabled={currentRoute === "/lists/adminAlunosList"} // Desabilita se estiver na rota
           >
-            <Text style={styles.navLinkText}>Alunos</Text>
+            <Text style={[styles.navLinkText, getNavLinkStyle("/lists/adminAlunosList")]}>
+              Alunos
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.navLinkItem}
-            onPress={() => handleNavigation("/adminProfessoresList")}
+            onPress={() => handleNavigation("lists/adminProfessoresList")}
+            disabled={currentRoute === "/lists/adminProfessoresList"} // Desabilita se estiver na rota
           >
-            <Text style={styles.navLinkText}>Professores</Text>
+            <Text style={[styles.navLinkText, getNavLinkStyle("/lists/adminProfessoresList")]}>
+              Professores
+            </Text>
           </TouchableOpacity>
         </View>
       </Animated.View>
