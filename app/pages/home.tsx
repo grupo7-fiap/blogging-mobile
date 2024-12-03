@@ -12,7 +12,7 @@ export default function HomeScreen() {
           <Text style={styles.mainText}>PROFESSORES E FUNCIONÁRIOS</Text>
           <View style={styles.divider} />
           <Text style={styles.buttonText}>
-            - Acesse o portal de professores e funcionários
+            Acesse o portal de professores e funcionários
           </Text>
         </Link>
       </TouchableOpacity>
@@ -22,10 +22,7 @@ export default function HomeScreen() {
         <Link href="/pages/students/alunosPosts" style={styles.link}>
           <Text style={styles.mainText}>ALUNOS</Text>
           <View style={styles.divider} />
-          <Text style={styles.buttonText}>
-            {" "}
-            - Acesse o portal de estudantes
-          </Text>
+          <Text style={styles.buttonText}>Acesse o portal de estudantes</Text>
         </Link>
       </TouchableOpacity>
     </View>

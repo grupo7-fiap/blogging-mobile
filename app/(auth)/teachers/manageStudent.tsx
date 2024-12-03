@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import api from "../../api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
 const ManageStudent: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -26,11 +26,7 @@ const ManageStudent: React.FC = () => {
 
   const router = useRouter();
 
-  //   MOCK PARA TESTE
-  const dataTest: "create" | "edit" = "create";
-  const action = dataTest;
-  const id = 1;
-  //   MOCK PARA TESTE
+  const { action, id } = useLocalSearchParams();
 
   useEffect(() => {
     setIsSaveDisabled(!(email && username && cpf));
@@ -86,7 +82,7 @@ const ManageStudent: React.FC = () => {
         email,
         cpf,
       };
-      await api.put(`/students/{id}`, body, {
+      await api.put(`/students/${id}`, body, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

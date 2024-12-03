@@ -12,7 +12,7 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../../api";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
 const ManagePostComponent: React.FC = () => {
   const [title, setTitle] = useState("");
@@ -29,11 +29,7 @@ const ManagePostComponent: React.FC = () => {
 
   const router = useRouter();
 
-  //   MOCK PARA TESTE
-  const dataTest: "create" | "edit" = "create";
-  const action = dataTest;
-  const postId = 1;
-  //   MOCK PARA TESTE
+  const { action, id } = useLocalSearchParams();
 
   const subjects = [
     "Matemática",
@@ -116,7 +112,7 @@ const ManagePostComponent: React.FC = () => {
         author,
         subject,
       };
-      await api.put(`/posts/admin/update/${postId}`, body, {
+      await api.put(`/posts/admin/update/${id}`, body, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
