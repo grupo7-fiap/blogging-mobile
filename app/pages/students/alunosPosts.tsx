@@ -9,12 +9,8 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types";
-import api from "../api";
-
-type NavigationProps = NativeStackNavigationProp<RootStackParamList, "alunosPosts">;
+import { useRouter } from "expo-router";
+import api from "@/app/api";
 
 const screenWidth = Dimensions.get("window").width;
 const numColumns = 2;
@@ -25,7 +21,7 @@ const AlunosPost: React.FC = () => {
   const [filteredPosts, setFilteredPosts] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  const navigation = useNavigation<NavigationProps>();
+  const router = useRouter();
 
   const fetchPosts = async () => {
     try {
@@ -40,10 +36,11 @@ const AlunosPost: React.FC = () => {
   };
 
   useEffect(() => {
-    const results = posts.filter((post) =>
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.author.toLowerCase().includes(searchTerm.toLowerCase())
+    const results = posts.filter(
+      (post) =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.author.toLowerCase().includes(searchTerm.toLowerCase()),
     );
     setFilteredPosts(results);
   }, [searchTerm, posts]);
@@ -55,11 +52,20 @@ const AlunosPost: React.FC = () => {
   const renderPost = ({ item }: { item: any }) => (
     <View style={styles.postCard}>
       <Text style={styles.postTitle}>{item.title || "Sem título"}</Text>
-      <Text style={styles.postDescription}>{item.description || "Sem descrição"}</Text>
-      <Text style={styles.postAuthor}>Autor: {item.author || "Desconhecido"}</Text>
+      <Text style={styles.postDescription}>
+        {item.description || "Sem descrição"}
+      </Text>
+      <Text style={styles.postAuthor}>
+        Autor: {item.author || "Desconhecido"}
+      </Text>
       <TouchableOpacity
         style={styles.viewButton}
-        onPress={() => navigation.navigate("postDetalhes", { id: item.id })}
+        onPress={() =>
+          router.push({
+            pathname: "/pages/students/postDetalhes",
+            params: { id: item.id },
+          })
+        }
       >
         <Text style={styles.buttonText}>Visualizar</Text>
       </TouchableOpacity>
@@ -89,7 +95,9 @@ const AlunosPost: React.FC = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderPost}
         numColumns={numColumns}
-        ListEmptyComponent={<Text style={styles.emptyText}>Nenhum post encontrado</Text>}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>Nenhum post encontrado</Text>
+        }
       />
     </View>
   );
@@ -122,7 +130,7 @@ const styles = StyleSheet.create({
   },
   postTitle: {
     fontSize: 16,
-    color: "#800020",
+    color: "#ffffff",
     marginBottom: 5,
   },
   postDescription: {
@@ -132,7 +140,7 @@ const styles = StyleSheet.create({
   },
   postAuthor: {
     fontSize: 14,
-    color: "#800020",
+    color: "#d3d3d3",
     fontStyle: "italic",
   },
   viewButton: {
@@ -145,6 +153,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 12,
+    textTransform: "uppercase",
   },
   loadingContainer: {
     flex: 1,
