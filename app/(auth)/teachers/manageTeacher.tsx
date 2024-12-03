@@ -28,6 +28,18 @@ const ManageTeacher: React.FC = () => {
   const { action, id } = useLocalSearchParams();
   useEffect(() => {
     setIsSaveDisabled(!(password && username));
+
+    const returnSelectTeacher = async () => {
+      if (action === "edit" && id) {
+        try {
+          const response = await api.get(`/users/${id}`);
+          const post = response.data.data;
+          setPassword(post.password);
+          setUsername(post.username);
+        } catch (error) {}
+      }
+    };
+    returnSelectTeacher();
   }, [password, username]);
 
   const closeModal = () => setShowCreateModal(false);

@@ -25,12 +25,24 @@ const ManageStudent: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
-
   const { action, id } = useLocalSearchParams();
 
   useEffect(() => {
     setIsSaveDisabled(!(email && username && cpf));
-  }, [email, username, cpf]);
+
+    const returnSelectStudent = async () => {
+      if (action === "edit" && id) {
+        try {
+          const response = await api.get(`/students/${id}`);
+          const post = response.data.data;
+          setEmail(post.email);
+          setUsername(post.username);
+          setCpf(post.cpf);
+        } catch (error) {}
+      }
+    };
+    returnSelectStudent();
+  }, [email, username, cpf, id, action]);
 
   const handleSubmit = async () => {
     if (!isSaveDisabled) {

@@ -56,7 +56,22 @@ const ManagePostComponent: React.FC = () => {
 
   useEffect(() => {
     setIsSaveDisabled(!(title && description && author && subject));
-  }, [title, description, author, subject]);
+
+    const returnSelectPost = async () => {
+      if (action === "edit" && id) {
+        try {
+          const response = await api.get(`/posts/${id}`);
+          const post = response.data.data;
+          setTitle(post.title);
+          setDescription(post.description);
+          setContent(post.content);
+          setAuthor(post.author);
+          setSubject(post.subject);
+        } catch (error) {}
+      }
+    };
+    returnSelectPost();
+  }, [title, description, author, subject, id, action]);
 
   const handleSubmit = async () => {
     if (!isSaveDisabled) {
