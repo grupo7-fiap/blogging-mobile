@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import api from "@/app/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Navbar from "../../../components/Navbar";
 import Sidebar from "../../../components/Sidebar";
 import DeleteModal from "../../../components/DeleteModal";
@@ -27,20 +28,25 @@ const ProfessoresList: React.FC = () => {
       const { width } = Dimensions.get("window");
       setIsMobile(width < 500); // Considere telas menores que 500px como mobile
     };
-  
+
     updateScreenSize(); // Verifica no início
-    const subscription = Dimensions.addEventListener("change", updateScreenSize);
-  
+    const subscription = Dimensions.addEventListener(
+      "change",
+      updateScreenSize,
+    );
+
     return () => {
       subscription?.remove(); // Remove listener corretamente
     };
   }, []);
-  
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await api.get("/users");
+        const token = await AsyncStorage.getItem("token");
+        const response = await api.get("/users", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setUsers(response.data);
       } catch (error) {
         console.error("Erro ao buscar users:", error);
@@ -59,9 +65,12 @@ const ProfessoresList: React.FC = () => {
 
   const handleDeleteUser = async (id: number) => {
     try {
-      await api.delete(`/users/${id}`);
+      const token = await AsyncStorage.getItem("token");
+      await api.delete(`/users/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setUsers((prevProfessores) =>
-        prevProfessores.filter((professor) => professor.id !== id)
+        prevProfessores.filter((professor) => professor.id !== id),
       );
       setSelectedUser(null);
     } catch (error) {

@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import api from "@/app/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Navbar from "../../../components/Navbar";
 import Sidebar from "../../../components/Sidebar";
 import DeleteModal from "../../../components/DeleteModal";
@@ -27,21 +28,25 @@ const PostAlunos: React.FC = () => {
       const { width } = Dimensions.get("window");
       setIsMobile(width < 640); // Considere telas menores que 640px como mobile
     };
-  
+
     updateScreenSize(); // Verifica no início
-    const subscription = Dimensions.addEventListener("change", updateScreenSize);
-  
+    const subscription = Dimensions.addEventListener(
+      "change",
+      updateScreenSize,
+    );
+
     return () => {
       subscription?.remove(); // Remove listener corretamente
     };
   }, []);
 
-  
-
   useEffect(() => {
     const fetchAlunos = async () => {
       try {
-        const response = await api.get("/students");
+        const token = await AsyncStorage.getItem("token");
+        const response = await api.get("/students", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setAlunos(response.data);
       } catch (error) {
         console.error("Erro ao buscar Aluno:", error);
@@ -60,7 +65,10 @@ const PostAlunos: React.FC = () => {
 
   const handleDeleteAluno = async (id: number) => {
     try {
-      await api.delete(`/students/${id}`);
+      const token = await AsyncStorage.getItem("token");
+      await api.delete(`/students/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setAlunos((prevAlunos) => prevAlunos.filter((aluno) => aluno.id !== id));
       setselectedAluno(null);
     } catch (error) {

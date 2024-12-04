@@ -9,6 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../../api";
 import Navbar from "../../../components/Navbar";
 import Sidebar from "../../../components/Sidebar";
@@ -27,15 +28,17 @@ const PostList: React.FC = () => {
       const { width } = Dimensions.get("window");
       setIsMobile(width < 768); // Considere telas menores que 768px como mobile
     };
-  
+
     updateScreenSize(); // Verifica no início
-    const subscription = Dimensions.addEventListener("change", updateScreenSize);
-  
+    const subscription = Dimensions.addEventListener(
+      "change",
+      updateScreenSize,
+    );
+
     return () => {
       subscription?.remove(); // Remove listener corretamente
     };
   }, []);
-  
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -59,9 +62,12 @@ const PostList: React.FC = () => {
 
   const handleDeletePost = async (id: number) => {
     try {
-      await api.delete(`/posts/admin/delete/${id}`);
+      const token = await AsyncStorage.getItem("token");
+      await api.delete(`/posts/admin/delete/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
-      console.log(setPosts)
+      console.log(setPosts);
       setSelectedPost(null);
     } catch (error) {
       console.error("Erro ao deletar o post:", error);

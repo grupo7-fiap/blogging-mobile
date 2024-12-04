@@ -18,8 +18,18 @@ export default function AuthenticatedLayout() {
         name="lists/adminProfessoresList"
         options={{ headerShown: false }}
       />
-      
+      <Stack.Screen
+        name="teachers/managePosts"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="teachers/manageStudent"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="teachers/manageTeacher"
+        options={{ headerShown: false }}
+      />
     </Stack>
-    
   );
 }

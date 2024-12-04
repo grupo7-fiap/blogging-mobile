@@ -29,12 +29,17 @@ const ManageStudent: React.FC = () => {
 
   useEffect(() => {
     setIsSaveDisabled(!(email && username && cpf));
+  }, [email, username, cpf]);
 
+  useEffect(() => {
     const returnSelectStudent = async () => {
       if (action === "edit" && id) {
         try {
-          const response = await api.get(`/students/${id}`);
-          const post = response.data.data;
+          const token = await AsyncStorage.getItem("token");
+          const response = await api.get(`/students/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const post = response.data;
           setEmail(post.email);
           setUsername(post.username);
           setCpf(post.cpf);
@@ -42,7 +47,7 @@ const ManageStudent: React.FC = () => {
       }
     };
     returnSelectStudent();
-  }, [email, username, cpf, id, action]);
+  }, [id, action]);
 
   const handleSubmit = async () => {
     if (!isSaveDisabled) {
@@ -206,7 +211,7 @@ const styles = StyleSheet.create({
 
   form: {
     backgroundColor: "#fff",
-    padding: 20,
+    padding: 10,
     borderRadius: 8,
     shadowColor: "#000",
     shadowOffset: {
@@ -216,7 +221,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 10,
-    width: "50%",
+    width: "90%",
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
