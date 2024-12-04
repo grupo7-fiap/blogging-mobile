@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from "react-native";
-import { useRoute, useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types";
-import api from "../api";
-
-type NavigationProps = NativeStackNavigationProp<RootStackParamList, "postDetalhes">;
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet,
+} from "react-native";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import api from "@/app/api";
 
 const PostDetails: React.FC = () => {
-  const route = useRoute();
-  const navigation = useNavigation<NavigationProps>();
-  const { id } = route.params as { id: number };
+  const router = useRouter();
+  const { id } = useLocalSearchParams(); // Obtém o parâmetro dinâmico `id`
   const [post, setPost] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -19,14 +20,14 @@ const PostDetails: React.FC = () => {
       try {
         const response = await api.get(`/posts/${id}`);
         setPost(response.data.data);
-        setLoading(false);
       } catch (error) {
         console.error("Erro ao buscar o post:", error);
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchPost();
+    if (id) fetchPost();
   }, [id]);
 
   if (loading) {
@@ -48,11 +49,16 @@ const PostDetails: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("alunosPosts")}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => router.push("/pages/students/alunosPosts")} // Navega de volta para a lista de posts
+      >
         <Text style={styles.backButtonText}>Voltar</Text>
       </TouchableOpacity>
       <Text style={styles.title}>{post.title || "Sem título"}</Text>
-      <Text style={styles.description}>{post.description || "Sem descrição"}</Text>
+      <Text style={styles.description}>
+        {post.description || "Sem descrição"}
+      </Text>
       <Text style={styles.content}>{post.content || "Sem conteúdo"}</Text>
       <Text style={styles.author}>Autor: {post.author || "Desconhecido"}</Text>
     </View>
@@ -89,13 +95,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    color: "#800020",
+    color: "#ffffff",
     marginBottom: 20,
     textAlign: "center",
   },
   description: {
     fontSize: 16,
-    color: "#4d4d4d",
+    color: "#d3d3d3",
     marginBottom: 10,
     lineHeight: 24,
   },
@@ -107,7 +113,7 @@ const styles = StyleSheet.create({
   },
   author: {
     fontSize: 16,
-    color: "#800020",
+    color: "#ffffff",
     textAlign: "right",
     fontStyle: "italic",
   },
