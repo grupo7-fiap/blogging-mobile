@@ -26,21 +26,26 @@ const ManageTeacher: React.FC = () => {
   const router = useRouter();
 
   const { action, id } = useLocalSearchParams();
+
   useEffect(() => {
     setIsSaveDisabled(!(password && username));
+  }, [password, username]);
 
+  useEffect(() => {
     const returnSelectTeacher = async () => {
       if (action === "edit" && id) {
         try {
-          const response = await api.get(`/users/${id}`);
-          const post = response.data.data;
-          setPassword(post.password);
+          const token = await AsyncStorage.getItem("token");
+          const response = await api.get(`/users/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const post = response.data;
           setUsername(post.username);
         } catch (error) {}
       }
     };
     returnSelectTeacher();
-  }, [password, username]);
+  }, [id, action]);
 
   const closeModal = () => setShowCreateModal(false);
 
@@ -138,6 +143,7 @@ const ManageTeacher: React.FC = () => {
               placeholder="Digite sua senha"
               value={password}
               onChangeText={setPassword}
+              secureTextEntry
             />
 
             {/* Botões */}
@@ -192,7 +198,7 @@ const styles = StyleSheet.create({
 
   form: {
     backgroundColor: "#fff",
-    padding: 20,
+    padding: 10,
     borderRadius: 8,
     shadowColor: "#000",
     shadowOffset: {
@@ -202,7 +208,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 10,
-    width: "50%",
+    width: "90%",
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",

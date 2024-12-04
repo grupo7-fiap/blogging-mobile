@@ -55,8 +55,10 @@ const ManagePostComponent: React.FC = () => {
   ];
 
   useEffect(() => {
-    setIsSaveDisabled(!(title && description && author && subject));
+    setIsSaveDisabled(!(title && description && content && author && subject));
+  }, [title, description, content, author, subject]);
 
+  useEffect(() => {
     const returnSelectPost = async () => {
       if (action === "edit" && id) {
         try {
@@ -71,7 +73,7 @@ const ManagePostComponent: React.FC = () => {
       }
     };
     returnSelectPost();
-  }, [title, description, author, subject, id, action]);
+  }, [id, action]);
 
   const handleSubmit = async () => {
     if (!isSaveDisabled) {
@@ -87,7 +89,7 @@ const ManagePostComponent: React.FC = () => {
         router.push("../lists/adminPostList");
       }
     } else {
-      console.error(`Ação inválida: ${action}`);
+      console.error(`Ação inválida`);
     }
   };
 
@@ -268,8 +270,8 @@ const styles = StyleSheet.create({
 
   form: {
     backgroundColor: "#fff",
-    padding: 20,
     borderRadius: 8,
+    padding: 10,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -278,7 +280,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 10,
-    width: "50%",
+    width: "90%",
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
@@ -321,13 +323,14 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
+    marginTop: 10,
+    marginBottom: 10,
   },
 
   button: {
     backgroundColor: "#800020",
-    padding: 10,
     borderRadius: 4,
+    padding: 5,
     flex: 1,
     alignItems: "center",
     marginLeft: 10,
@@ -339,8 +342,8 @@ const styles = StyleSheet.create({
 
   backButton: {
     backgroundColor: "#800020",
-    padding: 10,
     borderRadius: 4,
+    padding: 5,
     flex: 1,
     alignItems: "center",
   },
