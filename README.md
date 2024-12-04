@@ -12,4 +12,4 @@ e agora nossa proposta é alcançar ainda mais dispositivos, por isso criamos es
 A documentação pode ser acessada [neste link](https://docs.google.com/document/d/175VmzDTbC-1npQpVBXBCheg3R89p6tKh558XW8poqlc/edit?usp=sharing).
 
 ## Vídeo
-O vídeo pode ser acessado [neste link](https://#).
+O vídeo pode ser acessado [neste link](https://youtu.be/HmLEOBcYsuc).
